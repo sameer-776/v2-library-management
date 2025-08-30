@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library System</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Login Overlay -->
+  <div class="glass-overlay" id="login-overlay" style="display: none;">
+    <div class="login-box">
+      <h2>System Login</h2>
+      <input type="text" id="login-id" placeholder="Login ID" autocomplete="username">
+      <input type="password" id="login-pass" placeholder="Password" autocomplete="current-password">
+      <button id="login-submit">Login</button>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- Main UI -->
+  <div id="date-time-container">
+    <div id="digital-clock">00:00:00</div>
+    <div id="digital-date">Wednesday, January 1, 2025</div>
+  </div>
+
+  <div class="page-title">
+    <h1>Library Entry System</h1>
+  </div>
+
+  <!-- Left Summary Panel (NEW) -->
+  <div class="summary-panel">
+    <h2>Live Report</h2>
+    <div class="summary-item">
+      <span>Entries Today</span>
+      <span id="entries-today">0</span>
+    </div>
+    <div class="summary-item">
+      <span>Currently Inside</span>
+      <span id="currently-inside">0</span>
+    </div>
+    <div class="summary-item">
+      <span>Peak Hour Today</span>
+      <span id="peak-hour">N/A</span>
+    </div>
+  </div>
+
+  <!-- Right "Who's Inside" Panel -->
+  <div class="live-status-panel">
+    <h2>Who's Inside</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Sr.</th>
+            <th>Reg. No.</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if users_inside %}
+          {% for user in users_inside %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ user.full_reg_no[-5:] }}</td>
+            <td>{{ user.name }}</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="3" style="text-align: center; padding: 20px;">The library is currently empty.</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Main Interactive Area -->
+  <div class="container">
+    <div id="logo" class="logo" tabindex="0" role="button" aria-label="Start Entry or Exit"></div>
+
+    <!-- "Click to continue" message (NEW) -->
+    <div id="click-prompt" class="click-prompt">
+      Click the logo to begin Entry / Exit
+    </div>
+
+    <div id="loginPanel" class="login-panel">
+      <div id="roleSelection">
+        <div class="role-option" data-role="Student">Student</div>
+        <div class="role-option" data-role="Faculty">Faculty</div>
+      </div>
+
+      <div id="enrollment" class="hidden">
+        <input type="text" id="enrollInput" placeholder="Enter Last Digits of Reg. No." inputmode="numeric">
+        <p id="enrollError" class="error-text"></p>
+        <button id="submitBtn">Next</button>
+      </div>
+
+      <!-- Reason selection is removed from the flow -->
+      <form id="enrollForm" action="{{ url_for('check_user') }}" method="POST" class="hidden">
+        <input type="hidden" id="hiddenRole" name="role">
+        <input type="hidden" id="hiddenEnroll" name="registry_last_digits">
+        <!-- hiddenReason is no longer needed but kept to prevent errors if referenced -->
+        <input type="hidden" id="hiddenReason" name="reason" value="Self Study">
+      </form>
+    </div>
+  </div>
+
+  <!-- Developer Credits -->
+  <div class="developer-credits">
+    <p>Developed By:</p>
+    <p>Sameer & Aryan Gaikwad (B.Tech AIML 2024-28)</p>
+    <p>Kshitij & Mohit Kumar (BCA 2024-27)</p>
+    <p>Under the supervision of Dr. Vipin Khattri</p>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" data-message="{{ toast_message }}" data-type="{{ toast_type }}"></div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
